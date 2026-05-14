@@ -1,0 +1,22 @@
+/* App.css */
+:root {
+  --primary: #1b4332;
+  --secondary: #40916c;
+  --glass: rgba(255, 255, 255, 0.9);
+}
+
+.main-layout { display: flex; min-height: 100vh; background: #f8fafc; }
+.content-viewport { margin-left: 260px; flex: 1; padding: 40px; }
+
+.grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; margin-top: 30px; }
+
+.fade-in { animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Landing Page Specific CSS (LandingPage.css madhe taka) */
+.lp-container { 
+  background: linear-gradient(rgba(27, 67, 50, 0.9), rgba(27, 67, 50, 0.9)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80');
+  background-size: cover; height: 100vh; display: flex; align-items: center; justify-content: center; color: white;
+}
+.lp-btn { padding: 18px 45px; background: #95d5b2; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.lp-btn:hover { transform: scale(1.05); background: white; }
