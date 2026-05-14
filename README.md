@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+<div align="center">
+  <img src="./screenshots/logo.png" alt="AgroCalculus Logo" width="150" height="150" />
+  <h1>🌾 AgroCalculus</h1>
+  <p><strong>A Next-Generation Digital Ecosystem for Modern Agriculture</strong></p>
+  <p>
+    <img src="https://img.shields.io/badge/React-18.x-blue?style=for-the-badge&logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/MongoDB_Atlas-Multi--DB-green?style=for-the-badge&logo=mongodb" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/Node.js-Express-lightgrey?style=for-the-badge&logo=node.js" alt="Node" />
+  </p>
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+## 🌟 Overview
 
-In the project directory, you can run:
+**AgroCalculus** is a comprehensive, production-ready platform designed to empower farmers and agricultural officers. It bridges the gap between traditional farming and digital administration by providing a hyper-local, bilingual (English/Marathi) dashboard for market prices, government schemes, and community networking.
 
-### `npm start`
+### 📸 Project Screenshots
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<details open>
+  <summary><b>1. Login & Authentication</b></summary>
+  <br/>
+  <img src="./screenshots/login.png" alt="Login Page" width="800" />
+  <p><i>Secure OTP-based login system for Farmers and APMC Staff.</i></p>
+</details>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<details open>
+  <summary><b>2. Mandi Explorer (Market Page)</b></summary>
+  <br/>
+  <img src="./screenshots/market.png" alt="Market Dashboard" width="800" />
+  <p><i>Live market prices powered by Gov.in API, alongside logistics and APMC staff controls.</i></p>
+</details>
 
-### `npm test`
+<details open>
+  <summary><b>3. Government Schemes</b></summary>
+  <br/>
+  <img src="./screenshots/schemes.png" alt="Schemes Portal" width="800" />
+  <p><i>Premium dark-glassmorphism portal for applying to and tracking official schemes.</i></p>
+</details>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<details open>
+  <summary><b>4. Village Connect</b></summary>
+  <br/>
+  <img src="./screenshots/village.png" alt="Village Connect" width="800" />
+  <p><i>Community networking for localized problem solving and alerts.</i></p>
+</details>
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Key Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+*   **🌐 Real-Time Government APIs:** Integrated directly with `data.gov.in` to fetch and verify live APMC Mandi prices.
+*   **🛡️ Multi-Database Architecture:** Utlizes a 5-way isolated MongoDB cluster (`AuthDB`, `LedgerDB`, `MarketDB`, `VillageDB`, `SchemesDB`) ensuring zero single-points-of-failure.
+*   **🎭 Role-Based Access Control (RBAC):** Distinct, secure interfaces for Farmers and APMC Logistics Officers (Gate Pass management).
+*   **💎 Premium UI/UX:** Built with modern CSS (Glassmorphism, Floating Action Pills, and dynamic micro-animations) to deliver an immersive 'Command Center' feel.
+*   **🌍 Bilingual Localization:** Seamlessly switch between English and Marathi contextually.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🛠️ Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Frontend
+*   **React 18:** Modern functional components with hooks.
+*   **Vanilla CSS:** Zero dependencies, high-performance styling using CSS variables and flex/grid.
+*   **Chart.js:** For visual data analytics.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Backend
+*   **Node.js / Express:** High-concurrency RESTful API.
+*   **MongoDB Mongoose:** Complex multi-connection pooling for isolated architecture.
+*   **15+ Data Models:** Comprehensive schemas covering everything from Grievances to Logistics.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## ⚙️ Local Development
 
-## Learn More
+### 1. Clone the repository
+```bash
+git clone https://github.com/D-23Git/AgroCalculus.git
+cd AgroCalculus
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2. Setup Frontend
+```bash
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Setup Backend
+```bash
+cd backend
+npm install
+# Create a .env file with your MONGO_URI
+npm start
+```
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+<div align="center">
+  <i>Built for the Future of Indian Agriculture.</i>
+</div>
