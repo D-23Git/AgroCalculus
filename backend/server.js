@@ -41,10 +41,15 @@ app.get('/', (req, res) => {
     res.send('Agro-Master Professional API is running with Isolated Databases...');
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 [${new Date().toLocaleTimeString()}] Server running on port ${PORT}`);
-    console.log('📂 Professional Multi-DB Architecture Active');
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 [${new Date().toLocaleTimeString()}] Server running on port ${PORT}`);
+        console.log('📂 Professional Multi-DB Architecture Active');
+    });
+}
+
+// Export for Vercel Serverless
+module.exports = app;
 
 // Global Error Handler
 app.use((err, req, res, next) => {
