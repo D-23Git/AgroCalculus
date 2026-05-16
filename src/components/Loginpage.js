@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "./Loginpage.css";
 import api from "../utils/apiService";
+import { DISTRICTS, ALL_DISTRICTS } from './MarketData';
 
 const LoginPage = ({ onLogin }) => {
   const [mode, setMode] = useState("login");
@@ -10,6 +11,39 @@ const LoginPage = ({ onLogin }) => {
   const [form, setForm] = useState({ name: "", phone: "", email: "", village: "", acres: "", otp: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Officer cascading selection
+  const [offDist, setOffDist] = useState('');
+  const [offTal, setOffTal] = useState('');
+  const [offMarket, setOffMarket] = useState('');
+  const [offStaffId, setOffStaffId] = useState('APMC101');
+  const [offPin, setOffPin] = useState('');
+
+  // Compute talukas when district selected
+  const offTalukas = useMemo(() => {
+    if (!offDist || !DISTRICTS[offDist]) return [];
+    return Object.entries(DISTRICTS[offDist].talukas).map(([key, val]) => ({ key, name: val.name }));
+  }, [offDist]);
+
+  // Compute markets when taluka selected
+  const offMarkets = useMemo(() => {
+    if (!offDist || !offTal || !DISTRICTS[offDist]?.talukas[offTal]) return [];
+    return DISTRICTS[offDist].talukas[offTal].markets || [];
+  }, [offDist, offTal]);
+
+  // Auto-compute PIN from mandiId (same hash as backend)
+  const getMarketPIN = (marketId) => {
+    if (!marketId) return '';
+    let hash = 0;
+    for (let i = 0; i < marketId.length; i++) {
+      hash = ((hash << 5) - hash) + marketId.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash % 10000).toString().padStart(4, '0');
+  };
+
+  const selectedMarketId = offMarket;
+  const autoPin = getMarketPIN(selectedMarketId);
 
   const T = {
     en: {
@@ -128,19 +162,74 @@ const LoginPage = ({ onLogin }) => {
             )
           ) : (
             <>
+              {/* STAFF ID - prefilled */}
               <div className="lp-field">
                 <label>{lang === 'mr' ? "स्टाफ आयडी" : "Staff ID"}</label>
-                <input type="text" placeholder="EMP1234" value={form.staffId || ''} onChange={e => set("staffId", e.target.value)} />
+                <input type="text" value={offStaffId} onChange={e => setOffStaffId(e.target.value)}
+                  style={{background:'rgba(99,102,241,0.1)', borderColor:'rgba(99,102,241,0.5)', color:'white'}} />
               </div>
+
+              {/* DISTRICT DROPDOWN */}
               <div className="lp-field">
-                <label>{lang === 'mr' ? "मंडी आयडी (उदा. pune_haveli_main)" : "Mandi ID"}</label>
-                <input type="text" placeholder="pune_haveli_main" value={form.mandiId || ''} onChange={e => set("mandiId", e.target.value)} />
+                <label>{lang === 'mr' ? "जिल्हा निवडा" : "Select District"}</label>
+                <select value={offDist} onChange={e => { setOffDist(e.target.value); setOffTal(''); setOffMarket(''); }}
+                  style={{width:'100%', padding:'12px', borderRadius:'10px', background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.15)', color:'white', fontSize:'0.95rem'}}>
+                  <option value="">{lang === 'mr' ? '-- जिल्हा निवडा --' : '-- Select District --'}</option>
+                  {ALL_DISTRICTS.map(d => (
+                    <option key={d.id} value={d.id} style={{background:'#1e1e2e'}}>
+                      {d.icon} {lang === 'mr' ? d.mr : d.en}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="lp-field">
-                <label>{lang === 'mr' ? "पिन (PIN)" : "PIN"}</label>
-                <input type="password" placeholder="****" value={form.pin || ''} onChange={e => set("pin", e.target.value)} />
-              </div>
-            </>
+
+              {/* TALUKA DROPDOWN */}
+              {offDist && (
+                <div className="lp-field">
+                  <label>{lang === 'mr' ? "तालुका निवडा" : "Select Taluka"}</label>
+                  <select value={offTal} onChange={e => { setOffTal(e.target.value); setOffMarket(''); }}
+                    style={{width:'100%', padding:'12px', borderRadius:'10px', background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.15)', color:'white', fontSize:'0.95rem'}}>
+                    <option value="">{lang === 'mr' ? '-- तालुका निवडा --' : '-- Select Taluka --'}</option>
+                    {offTalukas.map(t => (
+                      <option key={t.key} value={t.key} style={{background:'#1e1e2e'}}>
+                        {lang === 'mr' ? t.name.mr : t.name.en}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* MARKET DROPDOWN */}
+              {offTal && (
+                <div className="lp-field">
+                  <label>{lang === 'mr' ? "मार्केट / मंडी निवडा" : "Select Market / Mandi"}</label>
+                  <select value={offMarket} onChange={e => setOffMarket(e.target.value)}
+                    style={{width:'100%', padding:'12px', borderRadius:'10px', background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.15)', color:'white', fontSize:'0.95rem'}}>
+                    <option value="">{lang === 'mr' ? '-- मंडी निवडा --' : '-- Select Mandi --'}</option>
+                    {offMarkets.map(m => (
+                      <option key={m.id} value={m.id} style={{background:'#1e1e2e'}}>
+                        {lang === 'mr' ? m.name.mr : m.name.en}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* AUTO PIN DISPLAY */}
+              {offMarket && (
+                <div className="lp-field">
+                  <label>{lang === 'mr' ? "पिन (PIN) — आपोआप भरला जातो" : "PIN (Auto-generated)"}</label>
+                  <div style={{
+                    background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.4)',
+                    borderRadius:'10px', padding:'12px 16px', letterSpacing:'8px', fontSize:'1.4rem',
+                    textAlign:'center', color:'#34d399', fontWeight:700
+                  }}>{autoPin}</div>
+                  <p style={{fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', marginTop:'4px', textAlign:'center'}}>
+                    {lang === 'mr' ? 'हा पिन तुमच्या मंडईसाठी आपोआप तयार होतो' : 'This PIN is auto-generated for your Mandi'}
+                  </p>
+                </div>
+              )}
+            </>/>
           )}
 
           {mode === "register" && (
@@ -152,22 +241,22 @@ const LoginPage = ({ onLogin }) => {
 
           {mode === 'officer' ? (
             <button className="lp-submit" onClick={async () => {
+                if (!offMarket) { setError(lang === 'mr' ? 'कृपया मंडी निवडा' : 'Please select a Mandi'); return; }
                 setLoading(true);
                 setError("");
                 try {
-                    const res = await api.staffLogin({ staffId: form.staffId, pin: form.pin, mandiId: form.mandiId });
+                    const res = await api.staffLogin({ staffId: offStaffId, pin: autoPin, mandiId: offMarket });
                     if (res.error) {
                         setError(res.error);
                     } else {
-                        // Redirect to market page with mandiId, indicating staff login
-                        onLogin({ role: 'staff', mandiId: form.mandiId, token: 'staff_dummy_token' });
+                        onLogin({ role: 'staff', mandiId: offMarket, token: 'staff_dummy_token', name: offStaffId });
                     }
                 } catch(e) {
                     setError("Server error");
                 }
                 setLoading(false);
-            }} disabled={loading}>
-              {loading ? "..." : (lang === 'mr' ? "लॉगिन करा" : "Login")}
+            }} disabled={loading || !offMarket}>
+              {loading ? "..." : (lang === 'mr' ? "मंडईत प्रवेश करा 🏪" : "Enter Mandi 🏪")}
             </button>
           ) : (!otpSent ? (
             <button className="lp-submit" onClick={handleSendOtp} disabled={loading}>
