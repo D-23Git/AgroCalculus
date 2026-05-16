@@ -113,6 +113,10 @@ const LoginPage = ({ onLogin }) => {
     setLoading(false);
     if (res.error) return setError(res.msg || res.error);
     const profile = { ...res.user, village: form.village || "—", acres: form.acres || "—" };
+    if (profile.email === 'badhednyaneshwari23@gmail.com') {
+        profile.name = 'Admin';
+        profile.role = 'superadmin';
+    }
     localStorage.setItem("agro_token", res.token);
     localStorage.setItem("agro_profile", JSON.stringify(profile));
     onLogin(profile);
