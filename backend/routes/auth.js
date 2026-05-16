@@ -187,21 +187,23 @@ router.get('/analytics', auth, async (req, res) => {
         }
 
         const totalUsers = await User.countDocuments();
-        const recentLogins = await User.find({ lastLogin: { $exists: true } })
-                                       .sort({ lastLogin: -1 })
-                                       .limit(50) // Show more users
-                                       .select('name email mobile lastLogin role accountType');
-        
         const superAdmins = await User.countDocuments({ role: 'superadmin' });
         const farmers = await User.countDocuments({ role: 'farmer' });
         const officers = await User.countDocuments({ role: 'officer' });
+
+        // Get actual user lists for the columns
+        const adminList = await User.find({ role: 'superadmin' }).select('name email mobile lastLogin');
+        const farmerList = await User.find({ role: 'farmer' }).select('name email mobile lastLogin');
+        const officerList = await User.find({ role: 'officer' }).select('name email mobile lastLogin');
 
         res.json({
             totalUsers,
             superAdmins,
             farmers,
             officers,
-            recentLogins
+            adminList,
+            farmerList,
+            officerList
         });
     } catch (err) {
         console.error('Analytics Error:', err);

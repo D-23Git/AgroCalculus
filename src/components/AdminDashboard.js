@@ -22,7 +22,7 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
   }, []);
 
   const timeAgo = (dateStr) => {
-    if (!dateStr) return 'N/A';
+    if (!dateStr) return 'Not logged in yet';
     const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
     if (diff < 60) return `${diff}s ago`;
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
@@ -37,13 +37,14 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
       borderRadius: '20px',
       overflow: 'hidden',
       flex: 1,
-      minWidth: '350px'
+      minWidth: '300px',
+      marginBottom: '20px'
     }}>
       <div style={{ padding: '20px', background: `${color}10`, borderBottom: `1px solid ${color}20`, display: 'flex', alignItems: 'center', gap: '10px' }}>
         <span style={{ fontSize: '1.2rem' }}>{icon}</span>
         <span style={{ fontWeight: 800, fontSize: '0.95rem', letterSpacing: '0.5px' }}>{title} ({users?.length || 0})</span>
       </div>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             {(!users || users.length === 0) ? (
@@ -99,7 +100,7 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <div style={{ padding: '8px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', fontSize: '0.85rem', fontWeight: 600 }}>
-            👑 {profile?.name || 'Admin'}
+             👑 Admin
           </div>
           <button onClick={() => onNavigate('home')} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>🌿 Go to App</button>
           <button onClick={onLogout} style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>Logout</button>
@@ -128,25 +129,25 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '100px 0', color: 'rgba(255,255,255,0.3)' }}>
             <div style={{ fontSize: '2rem', marginBottom: '20px' }}>⚡</div>
-            Initializing Data Streams...
+            Fetching full user registry...
           </div>
         ) : (
           <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
             <UserTable 
               title="Registered Shetkari" 
-              users={stats?.recentLogins?.filter(u => u.role === 'farmer')} 
+              users={stats?.farmerList} 
               icon="🌾" 
               color="#10b981" 
             />
             <UserTable 
               title="Mandai Prashak" 
-              users={stats?.recentLogins?.filter(u => u.role === 'officer')} 
+              users={stats?.officerList} 
               icon="🏢" 
               color="#8b5cf6" 
             />
             <UserTable 
               title="Administrators" 
-              users={stats?.recentLogins?.filter(u => u.role === 'superadmin')} 
+              users={stats?.adminList} 
               icon="👑" 
               color="#f59e0b" 
             />
