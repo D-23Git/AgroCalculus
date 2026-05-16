@@ -13,21 +13,14 @@ const App = () => {
   const [profile, setProfile] = useState(null);
   const [lang,    setLang]    = useState("mr");
 
-  // Restore session on mount
+  // Restore session data but stay on login page for security as requested
   React.useEffect(() => {
     const saved = localStorage.getItem("agro_profile");
     const token = localStorage.getItem("agro_token");
     if (saved && token) {
       const prof = JSON.parse(saved);
       setProfile(prof);
-      const email = prof.email?.toLowerCase() || '';
-      if (prof.role === 'superadmin' || email === 'badhednyaneshwari23@gmail.com') {
-        setPage("analytics");
-      } else if (prof.role === 'staff' || prof.role === 'officer') {
-        setPage("market");
-      } else {
-        setPage("home");
-      }
+      // Removed auto-navigation to force login page on startup
     }
   }, []);
 
