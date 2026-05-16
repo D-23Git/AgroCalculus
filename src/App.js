@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import LoginPage    from "./components/Loginpage";
-import LandingPage  from "./components/LandingPage";
+import LoginPage     from "./components/Loginpage";
+import LandingPage   from "./components/LandingPage";
 import DigitalLedger from "./components/DigitalLedger";
 import Villageconnect from "./components/Villageconnect";
-import AdvisoryPage from "./components/AdvisoryPage";
-import MarketPage   from "./components/MarketPage";       // ← Ready
-import SchemesPage  from "./components/SchemesPage";
+import AdvisoryPage  from "./components/AdvisoryPage";
+import MarketPage    from "./components/MarketPage";
+import SchemesPage   from "./components/SchemesPage";
+import AdminDashboard from "./components/AdminDashboard";
 
 const App = () => {
   const [page,    setPage]    = useState("login");
@@ -26,7 +27,13 @@ const App = () => {
 
   const handleLogin = (prof) => {
     setProfile(prof);
-    setPage("home");
+    if (prof.role === 'staff') {
+      setPage("market");
+    } else if (prof.role === 'superadmin' || prof.email === 'badhednyaneshwari23@gmail.com') {
+      setPage("analytics");
+    } else {
+      setPage("home");
+    }
   };
 
   const handleLogout = () => {
@@ -82,6 +89,21 @@ const App = () => {
   /* ── ADVISORY ── */
   if (page === "advisory") {
     return <AdvisoryPage onNavigate={setPage} lang={lang} setLang={setLang} profile={profile} />;
+  }
+
+  /* ── ANALYTICS (Super Admin only) ── */
+  if (page === "analytics") {
+    if (!profile || profile.email !== 'badhednyaneshwari23@gmail.com') {
+      setPage("home");
+      return null;
+    }
+    return (
+      <AdminDashboard
+        profile={profile}
+        onNavigate={setPage}
+        onLogout={handleLogout}
+      />
+    );
   }
 
   return null;

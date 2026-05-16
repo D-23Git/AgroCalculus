@@ -73,7 +73,40 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
    const [staffPinInput, setStaffPinInput] = useState('');
    const [staffIdInput, setStaffIdInput] = useState('');
 
-   // FARMER-ONLY STATE
+   // 🚀 AUTO-ACTIVATE OFFICER MODE: If an Officer logged in from LoginPage directly
+   useEffect(() => {
+      if (profile?.role === 'staff' && profile?.mandiId) {
+         const parts = profile.mandiId.split('_');
+         const distId = parts[0];
+         // Auto-select district
+         setSelDist(distId);
+         // Find the taluka and market from DISTRICTS data
+         const distData = DISTRICTS[distId];
+         if (distData) {
+            // Find matching taluka key
+            const talukaKey = Object.keys(distData.talukas).find(tk =>
+               profile.mandiId.includes(tk)
+            );
+            if (talukaKey) {
+               setSelTal(talukaKey);
+               const market = distData.talukas[talukaKey]?.markets?.find(
+                  m => m.id === profile.mandiId
+               );
+               if (market) {
+                  setSelMkt(market);
+                  setMainView('market');
+                  // Auto-login as staff for this market
+                  setTimeout(() => {
+                     setIsStaffLoggedIn(true);
+                     setUserRole('authority');
+                  }, 500);
+               }
+            }
+         }
+      }
+   }, [profile?.mandiId]);
+
+
    const [gatePass, setGatePass] = useState(null);
 
    // When market changes or user changes, reset and try to load the pass for THAT specific market + user

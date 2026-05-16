@@ -14,7 +14,7 @@ const options = {
 const createResilientConnection = (dbName, humanName) => {
   const conn = mongoose.createConnection(uri, { ...options, dbName });
 
-  conn.on('connected', () => {
+  conn.once('connected', () => {
     console.log(`✅ ${humanName} Connected: REMOTE (Atlas)`);
   });
 

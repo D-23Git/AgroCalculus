@@ -96,10 +96,11 @@ const LoginPage = ({ onLogin }) => {
         <div className="lp-tabs">
           <button className={mode === "login" ? "on" : ""} onClick={() => { setMode("login"); setOtpSent(false); setError(""); }}>{t.login}</button>
           <button className={mode === "register" ? "on" : ""} onClick={() => { setMode("register"); setOtpSent(false); setError(""); }}>{t.register}</button>
+          <button className={mode === "officer" ? "on" : ""} onClick={() => { setMode("officer"); setOtpSent(false); setError(""); }}>{lang === 'mr' ? "प्रशासक" : "Officer"}</button>
         </div>
 
         <div className="lp-form">
-          {!otpSent && (
+          {mode !== 'officer' && !otpSent && (
             <div className="lp-method-toggle" style={{display:'flex', gap:'10px', marginBottom:'20px', position:'relative', zIndex:10}}>
               <button type="button" onClick={()=>setAuthMethod('email')} style={{flex:1, padding:'10px', borderRadius:'8px', border:'1px solid var(--dl-border)', background: authMethod==='email'?'var(--dl-indigo)':'transparent', color: authMethod==='email'?'white':'var(--dl-text-muted)', cursor:'pointer'}}>📧 Email</button>
               <button type="button" onClick={()=>setAuthMethod('mobile')} style={{flex:1, padding:'10px', borderRadius:'8px', border:'1px solid var(--dl-border)', background: authMethod==='mobile'?'var(--dl-indigo)':'transparent', color: authMethod==='mobile'?'white':'var(--dl-text-muted)', cursor:'pointer'}}>📱 Mobile</button>
@@ -113,16 +114,33 @@ const LoginPage = ({ onLogin }) => {
             </div>
           )}
 
-          {authMethod === 'email' ? (
-            <div className="lp-field">
-              <label>{t.email}</label>
-              <input type="email" placeholder="example@gmail.com" value={form.email} onChange={e => set("email", e.target.value)} disabled={otpSent} />
-            </div>
+          {mode !== 'officer' ? (
+            authMethod === 'email' ? (
+              <div className="lp-field">
+                <label>{t.email}</label>
+                <input type="email" placeholder="example@gmail.com" value={form.email} onChange={e => set("email", e.target.value)} disabled={otpSent} />
+              </div>
+            ) : (
+              <div className="lp-field">
+                <label>{t.phone}</label>
+                <input type="tel" placeholder="9373082323" value={form.phone} onChange={e => set("phone", e.target.value)} disabled={otpSent} />
+              </div>
+            )
           ) : (
-            <div className="lp-field">
-              <label>{t.phone}</label>
-              <input type="tel" placeholder="9373082323" value={form.phone} onChange={e => set("phone", e.target.value)} disabled={otpSent} />
-            </div>
+            <>
+              <div className="lp-field">
+                <label>{lang === 'mr' ? "स्टाफ आयडी" : "Staff ID"}</label>
+                <input type="text" placeholder="EMP1234" value={form.staffId || ''} onChange={e => set("staffId", e.target.value)} />
+              </div>
+              <div className="lp-field">
+                <label>{lang === 'mr' ? "मंडी आयडी (उदा. pune_haveli_main)" : "Mandi ID"}</label>
+                <input type="text" placeholder="pune_haveli_main" value={form.mandiId || ''} onChange={e => set("mandiId", e.target.value)} />
+              </div>
+              <div className="lp-field">
+                <label>{lang === 'mr' ? "पिन (PIN)" : "PIN"}</label>
+                <input type="password" placeholder="****" value={form.pin || ''} onChange={e => set("pin", e.target.value)} />
+              </div>
+            </>
           )}
 
           {mode === "register" && (
@@ -132,7 +150,26 @@ const LoginPage = ({ onLogin }) => {
             </div>
           )}
 
-          {!otpSent ? (
+          {mode === 'officer' ? (
+            <button className="lp-submit" onClick={async () => {
+                setLoading(true);
+                setError("");
+                try {
+                    const res = await api.staffLogin({ staffId: form.staffId, pin: form.pin, mandiId: form.mandiId });
+                    if (res.error) {
+                        setError(res.error);
+                    } else {
+                        // Redirect to market page with mandiId, indicating staff login
+                        onLogin({ role: 'staff', mandiId: form.mandiId, token: 'staff_dummy_token' });
+                    }
+                } catch(e) {
+                    setError("Server error");
+                }
+                setLoading(false);
+            }} disabled={loading}>
+              {loading ? "..." : (lang === 'mr' ? "लॉगिन करा" : "Login")}
+            </button>
+          ) : (!otpSent ? (
             <button className="lp-submit" onClick={handleSendOtp} disabled={loading}>
               {loading ? "..." : t.sendBtn}
             </button>
@@ -150,7 +187,7 @@ const LoginPage = ({ onLogin }) => {
                 {lang==='mr'?'माहिती बदला':'Change Info'}
               </p>
             </div>
-          )}
+          ))}
 
           {error && <div className="lp-error" style={{marginTop:'20px'}}>⚠️ {error}</div>}
         </div>

@@ -463,6 +463,15 @@ const apiService = {
             const res = await fetch(`${API_BASE_URL}/news/seed`, { method: 'POST' });
             return await res.json();
         } catch (e) { return { error: 'Seeding news failed' }; }
+    },
+    // --- SUPER ADMIN ANALYTICS ---
+    getAnalytics: async (token) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/analytics`, {
+                headers: { 'x-auth-token': token }
+            });
+            return await res.json();
+        } catch (e) { return { error: 'Analytics fetch failed' }; }
     }
 };
 

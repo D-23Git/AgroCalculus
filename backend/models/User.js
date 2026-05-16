@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     village: { type: String },
     district: { type: String },
     role: { type: String, default: 'farmer' },
+    lastLogin: { type: Date },
     createdAt: { type: Date, default: Date.now }
 });
 

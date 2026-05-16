@@ -87,11 +87,41 @@ router.post('/verify-otp', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid OTP' });
         }
         user.otp = undefined;
+        user.lastLogin = new Date();
         if (name) user.name = name;
+        if (user.email === 'badhednyaneshwari23@gmail.com') {
+            user.role = 'superadmin';
+        }
         await user.save();
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.json({ token, user });
     } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
+const auth = require('../middleware/auth');
+
+router.get('/analytics', auth, async (req, res) => {
+    try {
+        if (req.user.role !== 'superadmin') {
+            return res.status(403).json({ msg: 'Access denied. Super Admin only.' });
+        }
+        const totalUsers = await User.countDocuments();
+        const recentLogins = await User.find({ lastLogin: { $exists: true } })
+                                       .sort({ lastLogin: -1 })
+                                       .limit(10)
+                                       .select('name email mobile lastLogin role');
+        
+        const superAdmins = await User.countDocuments({ role: 'superadmin' });
+
+        res.json({
+            totalUsers,
+            superAdmins,
+            recentLogins
+        });
+    } catch (err) {
+        console.error('Analytics Error:', err);
         res.status(500).json({ msg: 'Server error' });
     }
 });

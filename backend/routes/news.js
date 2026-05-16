@@ -10,7 +10,7 @@ const newsConn = mongoose.createConnection(process.env.MONGO_URI, {
     dbName: 'schemes_db'
 });
 
-newsConn.on('connected', () => console.log('✅ NewsDB Connected: REMOTE (Atlas)'));
+newsConn.once('connected', () => console.log('✅ NewsDB Connected: REMOTE (Atlas)'));
 
 const News = newsConn.model('News', NewsSchema);
 

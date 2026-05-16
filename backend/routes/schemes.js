@@ -10,7 +10,7 @@ const schemeConn = mongoose.createConnection(process.env.MONGO_URI, {
     dbName: 'schemes_db'
 });
 
-schemeConn.on('connected', () => console.log('✅ SchemesDB Connected: REMOTE (Atlas)'));
+schemeConn.once('connected', () => console.log('✅ SchemesDB Connected: REMOTE (Atlas)'));
 
 const Scheme = schemeConn.model('Scheme', SchemeSchema);
 
