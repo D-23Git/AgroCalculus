@@ -77,7 +77,8 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
 
    // 🚀 AUTO-ACTIVATE OFFICER MODE: If an Officer logged in from LoginPage directly
    useEffect(() => {
-      if (profile?.role === 'staff' && profile?.mandiId) {
+      const role = (profile?.role || '').toLowerCase();
+      if ((role === 'staff' || role === 'officer') && profile?.mandiId) {
          const parts = profile.mandiId.split('_');
          const distId = parts[0];
          // Auto-select district
@@ -98,16 +99,14 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
                   setSelMkt(market);
                   setMainView('market');
                   setActiveTab('logistics'); // Auto-open logistics for officers
-                  // Auto-login as staff for this market
-                  setTimeout(() => {
-                     setIsStaffLoggedIn(true);
-                     setUserRole('authority');
-                  }, 500);
+                  // Immediate activation
+                  setIsStaffLoggedIn(true);
+                  setUserRole('authority');
                }
             }
          }
       }
-   }, [profile?.mandiId]);
+   }, [profile?.mandiId, profile?.role]);
 
 
    const [gatePass, setGatePass] = useState(null);
