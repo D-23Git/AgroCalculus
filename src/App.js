@@ -26,10 +26,12 @@ const App = () => {
 
   const handleLogin = (prof) => {
     setProfile(prof);
-    const email = prof.email?.toLowerCase() || '';
-    if (prof.role === 'superadmin' || email === 'badhednyaneshwari23@gmail.com') {
+    const email = (prof.email || '').toLowerCase();
+    const role = (prof.role || '').toLowerCase();
+    
+    if (role === 'superadmin' || role === 'admin' || email === 'badhednyaneshwari23@gmail.com' || email === 'badhednyaneshwari2323@gmail.com') {
       setPage("analytics");
-    } else if (prof.role === 'staff' || prof.role === 'officer') {
+    } else if (role === 'staff' || role === 'officer' || prof.mandiId) {
       setPage("market");
     } else {
       setPage("home");
