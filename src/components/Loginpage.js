@@ -181,6 +181,14 @@ const LoginPage = ({ onLogin }) => {
                     }}>
                       🏪<br /><span style={{ fontSize: '0.85rem' }}>{lang === 'mr' ? 'मंडई प्रशासक' : 'APMC Officer'}</span>
                     </button>
+                    <button onClick={() => setSignupRole('admin')} style={{
+                      flex: 1, padding: '20px 10px', borderRadius: '14px',
+                      background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)',
+                      color: '#fbbf24', fontSize: '1rem', fontWeight: 700, cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}>
+                      👑<br /><span style={{ fontSize: '0.85rem' }}>{lang === 'mr' ? 'अॅडमिन' : 'Admin'}</span>
+                    </button>
                   </div>
                 </div>
               )}
@@ -313,6 +321,39 @@ const LoginPage = ({ onLogin }) => {
                     style={{ background: offMarket ? 'linear-gradient(135deg,#6366f1,#818cf8)' : undefined }}>
                     {loading ? "..." : (lang === 'mr' ? "मंडईत प्रवेश करा 🏪" : "Enter Mandi 🏪")}
                   </button>
+                </>
+              )}
+
+              {/* STEP 2C: Admin Login */}
+              {signupRole === 'admin' && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                    <button onClick={() => setSignupRole(null)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '1.2rem' }}>←</button>
+                    <span style={{ color: '#fbbf24', fontWeight: 600 }}>👑 {lang === 'mr' ? 'अॅडमिन लॉगिन' : 'Admin Login'}</span>
+                  </div>
+
+                  <div className="lp-field">
+                    <label>{lang === 'mr' ? "अॅडमिन ईमेल आयडी" : "Admin Email Address"}</label>
+                    <input type="email" placeholder="admin@example.com" value={form.email} 
+                      onChange={e => { set("email", e.target.value); setAuthMethod('email'); }} disabled={otpSent}
+                      style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.5)', color: 'white' }} />
+                  </div>
+
+                  {!otpSent ? (
+                    <button className="lp-submit" onClick={handleSendOtp} disabled={loading}
+                      style={{ background: 'linear-gradient(135deg,#d97706,#fbbf24)' }}>
+                      {loading ? "..." : t.sendBtn}
+                    </button>
+                  ) : (
+                    <div className="lp-otp-section animate-in" style={{ marginTop: '10px' }}>
+                      <div className="lp-field">
+                        <label style={{ color: '#fbbf24' }}>✔️ {t.otpLabel}</label>
+                        <input type="tel" placeholder="------" maxLength={6} value={form.otp} onChange={e => set("otp", e.target.value)} autoFocus
+                          style={{ fontSize: '2rem', textAlign: 'center', letterSpacing: '10px', background: 'rgba(245, 158, 11, 0.1)', borderColor: '#fbbf24' }} />
+                      </div>
+                      <button className="lp-submit" style={{ background: '#fbbf24', color: '#000' }} onClick={handleVerifyOtp} disabled={loading}>{loading ? "..." : t.verifyBtn}</button>
+                    </div>
+                  )}
                 </>
               )}
             </>

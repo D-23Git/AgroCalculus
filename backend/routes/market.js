@@ -1,5 +1,5 @@
 const express = require('express');
-const { marketConn } = require('../db');
+const { marketConn, authConn } = require('../db');
 const MandiPriceSchema = require('../models/MandiPrice');
 const MandiLogSchema = require('../models/MandiLog');
 const MandiAlertSchema = require('../models/MandiAlert');
@@ -13,6 +13,10 @@ const MandiAlert = marketConn.model('MandiAlert', MandiAlertSchema);
 const MandiLogistics = marketConn.model('MandiLogistics', MandiLogisticsSchema);
 const MandiStaffSchema = require('../models/MandiStaff');
 const MandiStaff = marketConn.model('MandiStaff', MandiStaffSchema);
+
+// Auth DB Sync
+const UserSchema = require('../models/User');
+const User = authConn.model('User', UserSchema);
 
 // TEMPORARY: Drop old global unique index
 marketConn.on('connected', async () => {
@@ -61,12 +65,31 @@ router.post('/staff/login', async (req, res) => {
                 lastLogin: new Date()
             });
             await staff.save();
-            return res.json({ success: true, staff, msg: 'Staff record created' });
         } else {
             staff.lastLogin = new Date();
             await staff.save();
-            return res.json({ success: true, staff });
         }
+
+        // SYNC WITH AUTH DB (User Model)
+        let user = await User.findOne({ mobile: staffId }); // Using staffId as 'mobile' identifier for sync
+        if (!user) {
+            user = new User({
+                name: staffId,
+                mobile: staffId,
+                role: 'officer',
+                accountType: 'Mandai Prashak', // For analytics visibility
+                mandiId: mandiId,
+                lastLogin: new Date()
+            });
+        } else {
+            user.role = 'officer';
+            user.accountType = 'Mandai Prashak';
+            user.mandiId = mandiId;
+            user.lastLogin = new Date();
+        }
+        await user.save();
+
+        return res.json({ success: true, staff, user, msg: 'Login successful' });
     } catch (err) {
         console.error('Staff Login Error:', err);
         res.status(500).json({ error: err.message });
