@@ -30,20 +30,59 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
     return `${Math.floor(diff / 86400)}d ago`;
   };
 
+  const UserTable = ({ title, users, icon, color }) => (
+    <div style={{
+      background: 'rgba(255,255,255,0.03)',
+      border: `1px solid ${color}30`,
+      borderRadius: '20px',
+      overflow: 'hidden',
+      flex: 1,
+      minWidth: '350px'
+    }}>
+      <div style={{ padding: '20px', background: `${color}10`, borderBottom: `1px solid ${color}20`, display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <span style={{ fontSize: '1.2rem' }}>{icon}</span>
+        <span style={{ fontWeight: 800, fontSize: '0.95rem', letterSpacing: '0.5px' }}>{title} ({users?.length || 0})</span>
+      </div>
+      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <tbody>
+            {(!users || users.length === 0) ? (
+              <tr><td style={{ padding: '30px', textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem' }}>No records found</td></tr>
+            ) : (
+              users.map((u, i) => (
+                <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                  <td style={{ padding: '15px 20px' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{u.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>
+                      {u.email?.includes('fake_e_') ? 'Mobile User' : (u.email || u.mobile || '—')}
+                    </div>
+                  </td>
+                  <td style={{ padding: '15px 20px', textAlign: 'right', verticalAlign: 'middle' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>{timeAgo(u.lastLogin)}</div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+      background: '#0a0a14',
       fontFamily: "'Inter', sans-serif",
       color: 'white',
       padding: '0'
     }}>
       {/* TOP NAV */}
       <div style={{
-        background: 'rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        padding: '16px 30px',
+        background: 'rgba(15,15,25,0.8)',
+        backdropFilter: 'blur(30px)',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        padding: '16px 40px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -51,187 +90,73 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
         top: 0,
         zIndex: 100
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontSize: '28px' }}>🛡️</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>🛡️</div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '1.2rem', letterSpacing: '1px' }}>AgroCalculus</div>
-            <div style={{ fontSize: '0.7rem', color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '2px' }}>Super Admin Control Panel</div>
+            <div style={{ fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-0.5px' }}>AgroCalculus</div>
+            <div style={{ fontSize: '0.65rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px' }}>Central Intelligence</div>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <div style={{
-            background: 'rgba(245,158,11,0.2)',
-            border: '1px solid rgba(245,158,11,0.4)',
-            color: '#fbbf24',
-            borderRadius: '20px',
-            padding: '6px 14px',
-            fontSize: '0.82rem',
-            fontWeight: 600
-          }}>
-            👑 अॅडमिन: {profile?.name || 'Admin'}
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <div style={{ padding: '8px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', fontSize: '0.85rem', fontWeight: 600 }}>
+            👑 {profile?.name || 'Admin'}
           </div>
-          <button onClick={() => onNavigate('home')} style={{
-            background: 'rgba(16,185,129,0.2)',
-            border: '1px solid rgba(16,185,129,0.4)',
-            color: '#34d399',
-            borderRadius: '8px',
-            padding: '7px 14px',
-            cursor: 'pointer',
-            fontSize: '0.82rem',
-            fontWeight: 600
-          }}>🌿 Go to App</button>
-          <button onClick={onLogout} style={{
-            background: 'rgba(239,68,68,0.2)',
-            border: '1px solid rgba(239,68,68,0.4)',
-            color: '#f87171',
-            borderRadius: '8px',
-            padding: '7px 14px',
-            cursor: 'pointer',
-            fontSize: '0.82rem',
-            fontWeight: 600
-          }}>🚪 Logout</button>
+          <button onClick={() => onNavigate('home')} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>🌿 Go to App</button>
+          <button onClick={onLogout} style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>Logout</button>
         </div>
       </div>
 
-      <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
-        {/* WELCOME */}
-        <div style={{ marginBottom: '30px' }}>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 800, margin: 0 }}>
-            Analytics Dashboard 📊
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)', margin: '6px 0 0', fontSize: '0.9rem' }}>
-            Real-time insights into AgroCalculus platform usage.
-          </p>
-        </div>
+      <div style={{ padding: '40px', maxWidth: '1400px', margin: '0 auto' }}>
+        {/* STATS */}
+        {stats && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+            {[
+              { label: 'Total Registrations', val: stats.totalUsers, color: '#6366f1', icon: '👥' },
+              { label: 'Shetkari (Farmers)', val: stats.farmers, color: '#10b981', icon: '🌾' },
+              { label: 'Mandai Prashak', val: stats.officers, color: '#8b5cf6', icon: '🏢' },
+              { label: 'Super Admins', val: stats.superAdmins, color: '#f59e0b', icon: '👑' }
+            ].map((s, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${s.color}20`, borderRadius: '24px', padding: '30px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: s.color }}>{s.val}</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(255,255,255,0.5)', marginTop: '5px' }}>{s.label}</div>
+                <div style={{ position: 'absolute', right: '-15px', bottom: '-15px', fontSize: '5rem', opacity: 0.05 }}>{s.icon}</div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {loading && (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '10px' }}>⚡</div>
-            <div style={{ color: 'rgba(255,255,255,0.6)' }}>Fetching live analytics...</div>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '100px 0', color: 'rgba(255,255,255,0.3)' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '20px' }}>⚡</div>
+            Initializing Data Streams...
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+            <UserTable 
+              title="Registered Shetkari" 
+              users={stats?.recentLogins?.filter(u => u.role === 'farmer')} 
+              icon="🌾" 
+              color="#10b981" 
+            />
+            <UserTable 
+              title="Mandai Prashak" 
+              users={stats?.recentLogins?.filter(u => u.role === 'officer')} 
+              icon="🏢" 
+              color="#8b5cf6" 
+            />
+            <UserTable 
+              title="Administrators" 
+              users={stats?.recentLogins?.filter(u => u.role === 'superadmin')} 
+              icon="👑" 
+              color="#f59e0b" 
+            />
           </div>
         )}
 
         {error && (
-          <div style={{
-            background: 'rgba(239,68,68,0.15)',
-            border: '1px solid rgba(239,68,68,0.4)',
-            borderRadius: '12px',
-            padding: '20px',
-            color: '#f87171',
-            textAlign: 'center'
-          }}>
+          <div style={{ marginTop: '30px', padding: '20px', borderRadius: '15px', background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', textAlign: 'center' }}>
             ⚠️ {error}
           </div>
-        )}
-
-        {stats && (
-          <>
-            {/* STAT CARDS */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '20px',
-              marginBottom: '30px'
-            }}>
-              {[
-                { icon: '🌍', label: 'Total Registrations', value: stats.totalUsers, color: '#6366f1', glow: 'rgba(99,102,241,0.2)' },
-                { icon: '🌾', label: 'Registered Farmers', value: stats.farmers || 0, color: '#10b981', glow: 'rgba(16,185,129,0.2)' },
-                { icon: '🏪', label: 'Mandi Officers', value: stats.officers || 0, color: '#818cf8', glow: 'rgba(129,140,248,0.2)' },
-                { icon: '👑', label: 'Super Admins', value: stats.superAdmins || 0, color: '#f59e0b', glow: 'rgba(245,158,11,0.2)' },
-              ].map((card, i) => (
-                <div key={i} style={{
-                  background: `rgba(255,255,255,0.05)`,
-                  border: `1px solid ${card.color}30`,
-                  borderRadius: '20px',
-                  padding: '24px',
-                  boxShadow: `0 10px 40px ${card.glow}`,
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{ fontSize: '2.4rem', fontWeight: 900, color: card.color }}>{card.value}</div>
-                  <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', fontWeight: 600, marginTop: '2px' }}>{card.label}</div>
-                  <div style={{ position: 'absolute', right: '-10px', bottom: '-10px', fontSize: '4rem', opacity: 0.1 }}>{card.icon}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* RECENT LOGINS TABLE */}
-            <div style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '24px',
-              overflow: 'hidden',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
-            }}>
-              <div style={{
-                padding: '24px 30px',
-                background: 'rgba(255,255,255,0.02)',
-                borderBottom: '1px solid rgba(255,255,255,0.05)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <span style={{ fontSize: '1.5rem' }}>🕵️</span>
-                <div>
-                  <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>Platform Activity Log</div>
-                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>Live tracking of recent user logins</div>
-                </div>
-              </div>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
-                      {['#', 'User Identity', 'Contact Info', 'Account Type', 'Activity'].map(h => (
-                        <th key={h} style={{
-                          textAlign: 'left',
-                          padding: '16px 30px',
-                          color: 'rgba(255,255,255,0.4)',
-                          fontWeight: 700,
-                          fontSize: '0.75rem',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1.5px'
-                        }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.recentLogins?.map((u, i) => (
-                      <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                      >
-                        <td style={{ padding: '16px 30px', color: 'rgba(255,255,255,0.2)', fontSize: '0.85rem' }}>{i + 1}</td>
-                        <td style={{ padding: '16px 30px' }}>
-                          <div style={{ fontWeight: 700, fontSize: '0.95rem', color: u.role === 'superadmin' ? '#fbbf24' : 'white' }}>
-                            {u.name || 'Anonymous User'}
-                          </div>
-                        </td>
-                        <td style={{ padding: '16px 30px', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
-                          {u.email?.includes('fake_e_') ? '—' : (u.email || u.mobile || '—')}
-                        </td>
-                        <td style={{ padding: '16px 30px' }}>
-                          <span style={{
-                            background: u.role === 'superadmin' ? 'rgba(245,158,11,0.15)' : (u.role === 'officer' ? 'rgba(99,102,241,0.15)' : 'rgba(16,185,129,0.15)'),
-                            color: u.role === 'superadmin' ? '#f59e0b' : (u.role === 'officer' ? '#818cf8' : '#34d399'),
-                            border: `1px solid ${u.role === 'superadmin' ? '#f59e0b40' : (u.role === 'officer' ? '#818cf840' : '#34d39940')}`,
-                            borderRadius: '8px',
-                            padding: '4px 12px',
-                            fontSize: '0.75rem',
-                            fontWeight: 700
-                          }}>
-                            {u.accountType || (u.role === 'superadmin' ? 'अॅडमिन' : 'शेतकरी')}
-                          </span>
-                        </td>
-                        <td style={{ padding: '16px 30px', color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
-                          Logged in {timeAgo(u.lastLogin)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
         )}
       </div>
     </div>
