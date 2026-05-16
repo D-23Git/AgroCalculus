@@ -34,14 +34,16 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
 
    useEffect(() => {
       if (selMkt) {
-         // 🛡️ ISOLATION: Check if this user is a remembered staff for THIS SPECIFIC market
-         setIsStaffLoggedIn(false);
-         setUserRole('farmer');
+         // 🛡️ ISOLATION: Reset unless this is an auto-logged officer for THIS specific market
+         if (profile?.role !== 'staff' || profile?.mandiId !== selMkt.id) {
+            setIsStaffLoggedIn(false);
+            setUserRole('farmer');
+         }
 
          const fetchMktData = async () => {
             try {
                const [p, l, a, reqs] = await Promise.all([
-                  api.getMandiPricesLive(selMkt.id), // Updated to call Live API
+                  api.getMandiPricesLive(selMkt.id),
                   api.getMandiLogs(selMkt.id),
                   api.getMandiAlerts(selMkt.id),
                   api.getLogisticsRequests(selMkt.id)
@@ -59,7 +61,7 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
          setIsStaffLoggedIn(false);
          setUserRole('farmer');
       }
-   }, [selMkt, userId]);
+   }, [selMkt, userId, profile?.role, profile?.mandiId]);
 
    const [isPaying, setIsPaying] = useState(false);
    const [lastAction, setLastAction] = useState(null);
