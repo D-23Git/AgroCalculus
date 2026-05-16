@@ -11,6 +11,7 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
       setLoading(true);
       const token = localStorage.getItem('agro_token');
       const data = await api.getAnalytics(token);
+      console.log("Admin Analytics Received:", data);
       if (data.error || data.msg) {
         setError(data.msg || data.error);
       } else {
@@ -20,6 +21,14 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
     };
     fetchAnalytics();
   }, []);
+
+  const handleRefresh = async () => {
+      setLoading(true);
+      const token = localStorage.getItem('agro_token');
+      const data = await api.getAnalytics(token);
+      setStats(data);
+      setLoading(false);
+  };
 
   const timeAgo = (dateStr) => {
     if (!dateStr) return '—';
@@ -101,6 +110,7 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
           <div style={{ padding: '8px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', fontSize: '0.85rem', fontWeight: 600 }}>
              👑 Admin Panel
           </div>
+          <button onClick={handleRefresh} style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>🔄 Sync Data</button>
           <button onClick={() => onNavigate('home')} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>🌿 Go to App</button>
           <button onClick={onLogout} style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', padding: '10px 20px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>Logout</button>
         </div>

@@ -186,24 +186,26 @@ router.get('/analytics', auth, async (req, res) => {
             if (changed) await u.save();
         }
 
-        const totalUsers = await User.countDocuments();
-        const superAdmins = await User.countDocuments({ role: { $regex: /^superadmin$/i } });
-        const farmers = await User.countDocuments({ role: { $regex: /^farmer$/i } });
-        const officers = await User.countDocuments({ role: { $regex: /^officer$/i } });
+        const totalUsers = await User.countDocuments({});
+        const superAdminsCount = await User.countDocuments({ role: { $regex: /^superadmin$/i } });
+        const farmersCount = await User.countDocuments({ role: { $regex: /^farmer$/i } });
+        const officersCount = await User.countDocuments({ role: { $regex: /^officer$/i } });
 
-        // Get actual user lists for the columns
-        const adminList = await User.find({ role: { $regex: /^superadmin$/i } }).select('name email mobile lastLogin');
-        const farmerList = await User.find({ role: { $regex: /^farmer$/i } }).select('name email mobile lastLogin');
-        const officerList = await User.find({ role: { $regex: /^officer$/i } }).select('name email mobile lastLogin');
+        console.log(`Analytics: Total=${totalUsers}, Admin=${superAdminsCount}, Farmers=${farmersCount}`);
+
+        // Get actual user lists for the columns - Using .lean() for raw data
+        const adminList = await User.find({ role: { $regex: /^superadmin$/i } }).select('name email mobile lastLogin').lean();
+        const farmerList = await User.find({ role: { $regex: /^farmer$/i } }).select('name email mobile lastLogin').lean();
+        const officerList = await User.find({ role: { $regex: /^officer$/i } }).select('name email mobile lastLogin').lean();
         
         // Get the last 50 login events
-        const recentActivity = await LoginLog.find({}).sort({ timestamp: -1 }).limit(50);
+        const recentActivity = await LoginLog.find({}).sort({ timestamp: -1 }).limit(50).lean();
 
         res.json({
             totalUsers,
-            superAdmins,
-            farmers,
-            officers,
+            superAdmins: superAdminsCount,
+            farmers: farmersCount,
+            officers: officersCount,
             adminList,
             farmerList,
             officerList,
