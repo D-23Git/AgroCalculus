@@ -151,9 +151,17 @@ router.get('/analytics', auth, async (req, res) => {
                     changed = true;
                 }
             } else if (!u.role || u.role === 'farmer') {
-                if (!u.role) { u.role = 'farmer'; changed = true; }
-                if (!u.accountType) { u.accountType = 'शेतकरी'; changed = true; }
-                if (!u.name || u.name === 'Farmer' || u.name === '—') { u.name = 'शेतकरी'; changed = true; }
+                // If they have a mandiId or staffId, they are likely an officer
+                if (u.mandiId || u.staffId) {
+                    u.role = 'officer';
+                    u.accountType = 'Mandai Prashak';
+                    if (!u.name || u.name === '—') u.name = 'मंडी अधिकारी';
+                } else {
+                    u.role = 'farmer';
+                    u.accountType = 'शेतकरी';
+                    if (!u.name || u.name === 'Farmer' || u.name === '—') u.name = 'शेतकरी';
+                }
+                changed = true;
             }
             if (changed) await u.save();
         }
