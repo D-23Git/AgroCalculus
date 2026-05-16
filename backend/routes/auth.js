@@ -190,10 +190,22 @@ router.get('/analytics', auth, async (req, res) => {
         const allUsersRaw = await User.find({}).lean();
         
         console.log(`Analytics Raw Fetch: Found ${allUsersRaw.length} total users`);
+        if (allUsersRaw.length > 0) {
+            console.log(`Sample Role: [${allUsersRaw[0].role}]`);
+        }
 
-        const farmerList = allUsersRaw.filter(u => !u.role || u.role.toLowerCase() === 'farmer');
-        const adminList = allUsersRaw.filter(u => u.role && u.role.toLowerCase() === 'superadmin');
-        const officerList = allUsersRaw.filter(u => u.role && u.role.toLowerCase() === 'officer');
+        const farmerList = allUsersRaw.filter(u => {
+            const r = (u.role || '').trim().toLowerCase();
+            return r === 'farmer' || r === '' || !u.role;
+        });
+        const adminList = allUsersRaw.filter(u => {
+            const r = (u.role || '').trim().toLowerCase();
+            return r === 'superadmin' || r === 'admin';
+        });
+        const officerList = allUsersRaw.filter(u => {
+            const r = (u.role || '').trim().toLowerCase();
+            return r === 'officer' || r === 'staff';
+        });
 
         // Get the last 50 login events
         const recentActivity = await LoginLog.find({}).sort({ timestamp: -1 }).limit(50).lean();
