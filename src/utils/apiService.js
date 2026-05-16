@@ -17,12 +17,12 @@ const apiService = {
         }
     },
 
-    verifyOtp: async (credentials, otp, name) => {
+    verifyOtp: async (credentials, otp, name, role) => {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...credentials, otp, name })
+                body: JSON.stringify({ ...credentials, otp, name, role })
             });
             const data = await response.json();
             if (!response.ok) return { error: data.msg || 'Verification failed' };

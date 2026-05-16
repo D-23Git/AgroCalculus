@@ -79,7 +79,7 @@ router.post('/send-otp', async (req, res) => {
 });
 
 router.post('/verify-otp', async (req, res) => {
-    const { email, mobile, otp, name } = req.body;
+    const { email, mobile, otp, name, role } = req.body;
     try {
         let query = email ? { email } : { mobile };
         const user = await User.findOne(query);
@@ -89,9 +89,23 @@ router.post('/verify-otp', async (req, res) => {
         user.otp = undefined;
         user.lastLogin = new Date();
         if (name) user.name = name;
+
+        // Role & AccountType Logic
         if (user.email === 'badhednyaneshwari23@gmail.com') {
             user.role = 'superadmin';
+            user.accountType = 'अॅडमिन';
+        } else if (role === 'admin') {
+            // If they picked admin but email doesn't match superadmin email
+            user.role = 'farmer'; 
+            user.accountType = 'शेतकरी';
+        } else if (role === 'officer') {
+            user.role = 'officer';
+            user.accountType = 'Mandai Prashak';
+        } else {
+            user.role = 'farmer';
+            user.accountType = 'शेतकरी';
         }
+
         await user.save();
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.json({ token, user });

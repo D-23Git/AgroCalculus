@@ -95,6 +95,7 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
                if (market) {
                   setSelMkt(market);
                   setMainView('market');
+                  setActiveTab('logistics'); // Auto-open logistics for officers
                   // Auto-login as staff for this market
                   setTimeout(() => {
                      setIsStaffLoggedIn(true);

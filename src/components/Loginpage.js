@@ -107,7 +107,8 @@ const LoginPage = ({ onLogin }) => {
     const res = await api.verifyOtp(
       authMethod === 'email' ? { email: form.email } : { mobile: form.phone },
       form.otp,
-      mode === "register" ? form.name : null
+      mode === "register" ? form.name : null,
+      signupRole // Pass the selected role
     );
     setLoading(false);
     if (res.error) return setError(res.msg || res.error);
