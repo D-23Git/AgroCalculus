@@ -3,9 +3,11 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { authConn } = require('../db');
 const UserSchema = require('../models/User');
+const User = authConn.model('User', UserSchema);
 const router = express.Router();
 
-const User = authConn.model('User', UserSchema);
+const LoginLogSchema = require('../models/LoginLog');
+const LoginLog = authConn.model('LoginLog', LoginLogSchema);
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -110,6 +112,19 @@ router.post('/verify-otp', async (req, res) => {
         }
 
         await user.save();
+
+        // RECORD LOGIN EVENT
+        const log = new LoginLog({
+            userId: user._id,
+            name: user.name,
+            role: user.role,
+            accountType: user.accountType,
+            timestamp: new Date(),
+            ip: req.ip,
+            userAgent: req.headers['user-agent']
+        });
+        await log.save();
+
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.json({ token, user });
     } catch (err) {
@@ -120,10 +135,29 @@ router.post('/verify-otp', async (req, res) => {
 const auth = require('../middleware/auth');
 
 router.get('/analytics', auth, async (req, res) => {
+    if (req.user.role !== 'superadmin') {
+        return res.status(403).json({ msg: 'Access Denied: Super Admin only' });
+    }
     try {
-        if (req.user.role !== 'superadmin') {
-            return res.status(403).json({ msg: 'Access denied. Super Admin only.' });
+        // ONE-TIME DATA REPAIR: Fix missing roles or incorrect names
+        const allUsers = await User.find({});
+        for (let u of allUsers) {
+            let changed = false;
+            if (u.email === 'badhednyaneshwari23@gmail.com') {
+                if (u.name !== 'Admin' || u.role !== 'superadmin') {
+                    u.name = 'Admin';
+                    u.role = 'superadmin';
+                    u.accountType = 'अॅडमिन';
+                    changed = true;
+                }
+            } else if (!u.role || u.role === 'farmer') {
+                if (!u.role) { u.role = 'farmer'; changed = true; }
+                if (!u.accountType) { u.accountType = 'शेतकरी'; changed = true; }
+                if (!u.name || u.name === 'Farmer' || u.name === '—') { u.name = 'शेतकरी'; changed = true; }
+            }
+            if (changed) await u.save();
         }
+
         const totalUsers = await User.countDocuments();
         const recentLogins = await User.find({ lastLogin: { $exists: true } })
                                        .sort({ lastLogin: -1 })

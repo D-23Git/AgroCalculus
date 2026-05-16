@@ -18,6 +18,9 @@ const MandiStaff = marketConn.model('MandiStaff', MandiStaffSchema);
 const UserSchema = require('../models/User');
 const User = authConn.model('User', UserSchema);
 
+const LoginLogSchema = require('../models/LoginLog');
+const LoginLog = authConn.model('LoginLog', LoginLogSchema);
+
 // TEMPORARY: Drop old global unique index
 marketConn.on('connected', async () => {
     try {
@@ -88,6 +91,18 @@ router.post('/staff/login', async (req, res) => {
             user.lastLogin = new Date();
         }
         await user.save();
+
+        // RECORD LOGIN EVENT
+        const log = new LoginLog({
+            userId: user._id,
+            name: staffId,
+            role: 'officer',
+            accountType: 'Mandai Prashak',
+            timestamp: new Date(),
+            ip: req.ip,
+            userAgent: req.headers['user-agent']
+        });
+        await log.save();
 
         return res.json({ success: true, staff, user, msg: 'Login successful' });
     } catch (err) {
