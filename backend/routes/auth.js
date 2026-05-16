@@ -9,6 +9,10 @@ const router = express.Router();
 const LoginLogSchema = require('../models/LoginLog');
 const LoginLog = authConn.model('LoginLog', LoginLogSchema);
 
+const { AdminSchema, OfficerSchema } = require('../models/RoleModels');
+const AdminModel = authConn.model('Admin', AdminSchema);
+const OfficerModel = authConn.model('Officer', OfficerSchema);
+
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 const transporter = nodemailer.createTransport({
@@ -109,6 +113,22 @@ router.post('/verify-otp', async (req, res) => {
                 user.role = 'farmer';
                 user.accountType = 'शेतकरी';
             }
+        }
+
+        // 🛡️ SYNC TO SEPARATE ROLE COLLECTIONS
+        if (user.role === 'superadmin' || user.email === 'badhednyaneshwari23@gmail.com') {
+             user.name = 'Admin'; // Force update
+             await AdminModel.findOneAndUpdate(
+                { email: user.email },
+                { userId: user._id, name: 'Admin', email: user.email, lastLogin: new Date() },
+                { upsert: true }
+             );
+        } else if (user.role === 'officer' || user.mandiId) {
+             await OfficerModel.findOneAndUpdate(
+                { userId: user._id },
+                { userId: user._id, name: user.name, mandiId: user.mandiId, lastLogin: new Date() },
+                { upsert: true }
+             );
         }
 
         await user.save();

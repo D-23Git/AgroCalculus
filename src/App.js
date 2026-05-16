@@ -13,24 +13,31 @@ const App = () => {
   const [profile, setProfile] = useState(null);
   const [lang,    setLang]    = useState("mr");
 
-  // Restore session on mount (Disabled for demonstration/strict login)
+  // Restore session on mount
   React.useEffect(() => {
-    /*
     const saved = localStorage.getItem("agro_profile");
     const token = localStorage.getItem("agro_token");
     if (saved && token) {
-      setProfile(JSON.parse(saved));
-      setPage("home");
+      const prof = JSON.parse(saved);
+      setProfile(prof);
+      const email = prof.email?.toLowerCase() || '';
+      if (prof.role === 'superadmin' || email === 'badhednyaneshwari23@gmail.com') {
+        setPage("analytics");
+      } else if (prof.role === 'staff' || prof.role === 'officer') {
+        setPage("market");
+      } else {
+        setPage("home");
+      }
     }
-    */
   }, []);
 
   const handleLogin = (prof) => {
     setProfile(prof);
-    if (prof.role === 'staff') {
-      setPage("market");
-    } else if (prof.role === 'superadmin' || prof.email === 'badhednyaneshwari23@gmail.com') {
+    const email = prof.email?.toLowerCase() || '';
+    if (prof.role === 'superadmin' || email === 'badhednyaneshwari23@gmail.com') {
       setPage("analytics");
+    } else if (prof.role === 'staff' || prof.role === 'officer') {
+      setPage("market");
     } else {
       setPage("home");
     }
