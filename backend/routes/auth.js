@@ -187,14 +187,17 @@ router.get('/analytics', auth, async (req, res) => {
         }
 
         const totalUsers = await User.countDocuments();
-        const superAdmins = await User.countDocuments({ role: 'superadmin' });
-        const farmers = await User.countDocuments({ role: 'farmer' });
-        const officers = await User.countDocuments({ role: 'officer' });
+        const superAdmins = await User.countDocuments({ role: { $regex: /^superadmin$/i } });
+        const farmers = await User.countDocuments({ role: { $regex: /^farmer$/i } });
+        const officers = await User.countDocuments({ role: { $regex: /^officer$/i } });
 
         // Get actual user lists for the columns
-        const adminList = await User.find({ role: 'superadmin' }).select('name email mobile lastLogin');
-        const farmerList = await User.find({ role: 'farmer' }).select('name email mobile lastLogin');
-        const officerList = await User.find({ role: 'officer' }).select('name email mobile lastLogin');
+        const adminList = await User.find({ role: { $regex: /^superadmin$/i } }).select('name email mobile lastLogin');
+        const farmerList = await User.find({ role: { $regex: /^farmer$/i } }).select('name email mobile lastLogin');
+        const officerList = await User.find({ role: { $regex: /^officer$/i } }).select('name email mobile lastLogin');
+        
+        // Get the last 50 login events
+        const recentActivity = await LoginLog.find({}).sort({ timestamp: -1 }).limit(50);
 
         res.json({
             totalUsers,
@@ -203,7 +206,8 @@ router.get('/analytics', auth, async (req, res) => {
             officers,
             adminList,
             farmerList,
-            officerList
+            officerList,
+            recentActivity
         });
     } catch (err) {
         console.error('Analytics Error:', err);
