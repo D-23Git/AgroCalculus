@@ -47,18 +47,18 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             {(!users || users.length === 0) ? (
-              <tr><td style={{ padding: '30px', textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem' }}>No registrations found</td></tr>
+              <tr><td style={{ padding: '30px', textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem' }}>No records found in database</td></tr>
             ) : (
               users.map((u, i) => (
                 <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                   <td style={{ padding: '15px 20px' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{u.name}</div>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{u.name || 'Anonymous'}</div>
                     <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>
-                      {u.email || u.mobile || '—'}
+                      {u.email || u.mobile || 'No contact info'}
                     </div>
                   </td>
                   <td style={{ padding: '15px 20px', textAlign: 'right', verticalAlign: 'middle' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>{timeAgo(u.lastLogin)}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)' }}>{u.lastLogin ? timeAgo(u.lastLogin) : 'Registered'}</div>
                   </td>
                 </tr>
               ))
@@ -93,8 +93,8 @@ const AdminDashboard = ({ onNavigate, onLogout, profile }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>🛡️</div>
           <div>
-            <div style={{ fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-0.5px' }}>AgroCalculus</div>
-            <div style={{ fontSize: '0.65rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px' }}>Central Intelligence</div>
+            <div style={{ fontWeight: 900, fontSize: '1.2rem', letterSpacing: '-0.5px' }}>AgroCalculus <span style={{ fontSize: '0.6rem', color: '#10b981', verticalAlign: 'middle', marginLeft: '5px' }}>v2.1</span></div>
+            <div style={{ fontSize: '0.65rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px' }}>Platform Intelligence</div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
