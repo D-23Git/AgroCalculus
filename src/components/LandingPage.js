@@ -212,6 +212,8 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
     },
   ];
 
+  const isAdmin = profile?.role === 'superadmin' || profile?.email === 'badhednyaneshwari23@gmail.com';
+
   return (
     <div className="pg">
 
@@ -222,6 +224,11 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
           <span className="tb-name">Agro<em>Calculus</em></span>
         </div>
         <div className="tb-right">
+          {isAdmin && (
+             <button className="tb-admin-pill" onClick={() => onNavigate('analytics')}>
+                🛡️ Admin Dashboard
+             </button>
+          )}
           <button className="tb-ico-btn" onClick={() => { setShowN(v=>!v); setShowP(false); setUnread(0); }}>
             🔔{unread > 0 && <span className="tb-dot">{unread}</span>}
           </button>
@@ -255,17 +262,17 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         <div className="drop-box">
           <p className="drop-ttl">👤 {t.prof}</p>
           <div className="pf-top">
-            <div className="pf-av">🧑‍🌾</div>
+            <div className="pf-av">{isAdmin ? '👑' : '🧑‍🌾'}</div>
             <div>
-              <div className="pf-name">{profile?.name||"—"}</div>
-              <div className="pf-loc">📍 {profile?.village||"—"}</div>
+              <div className="pf-name">{isAdmin ? 'Admin' : (profile?.name || "—")}</div>
+              <div className="pf-loc">📍 {isAdmin ? 'Control Center' : (profile?.village || "—")}</div>
             </div>
           </div>
           <div className="pf-grid">
-            <div className="pf-c"><span>{t.ph}</span><b>{profile?.phone||"—"}</b></div>
-            <div className="pf-c"><span>{t.farm}</span><b>{profile?.acres?`${profile.acres} ac`:"—"}</b></div>
-            <div className="pf-c"><span>{t.loc}</span><b>{profile?.village||"—"}</b></div>
-            <div className="pf-c"><span>{t.status}</span><b className="ok">✅ Active</b></div>
+            <div className="pf-c"><span>{t.ph}</span><b>{isAdmin ? 'Encrypted' : (profile?.phone || "—")}</b></div>
+            <div className="pf-c"><span>{t.farm}</span><b>{isAdmin ? 'Global' : (profile?.acres ? `${profile.acres} ac` : "—")}</b></div>
+            <div className="pf-c"><span>{t.loc}</span><b>{isAdmin ? 'Admin' : (profile?.village || "—")}</b></div>
+            <div className="pf-c"><span>{t.status}</span><b className="ok">✅ {isAdmin ? 'Master Access' : 'Active'}</b></div>
           </div>
           <button className="logout-btn" onClick={onLogout}>🚪 {t.logout}</button>
         </div>
@@ -277,7 +284,7 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
           <div className="pop-box" onClick={e => e.stopPropagation()}>
             <div className="pop-top">
               <span className="pop-name">{popup.name}</span>
-              <span className={`pop-ch ${popup.up?"up":"dn"}`}>{popup.change}</span>
+              <span className={`pop-ch ${popup.up ? "up" : "dn"}`}>{popup.change}</span>
             </div>
             <div className="pop-price">{popup.price}</div>
             <div className="pop-adv">💡 {t.advice}: {popup.info}</div>
@@ -287,7 +294,7 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
       )}
 
       {/* ── HERO ── */}
-      <section className={`hero ${heroVis?"hero--visible":""}`}>
+      <section className={`hero ${heroVis ? "hero--visible" : ""}`}>
         <div className="hero-orb hero-orb--1" />
         <div className="hero-orb hero-orb--2" />
         <div className="hero-orb hero-orb--3" />
@@ -304,7 +311,7 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
           <p className="hero-desc">{t.desc}</p>
           {profile?.name && (
             <div className="hero-greet">
-              👋 {lang==="en"?`Welcome back, ${profile.name}`:`स्वागत, ${profile.name}`}
+              👋 {isAdmin ? (lang === 'en' ? 'Welcome, Super Admin' : 'स्वागत आहे, सुपर अॅडमिन') : (lang === 'en' ? `Welcome back, ${profile.name}` : `स्वागत, ${profile.name}`)}
             </div>
           )}
           <div className="hero-stats">
@@ -334,11 +341,8 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
             style={{"--i": i}}
             onClick={() => onNavigate(card.nav)}
           >
-            {/* shine layer */}
             <div className="acard-shine" />
-            {/* top tag badge */}
             <div className="ac-tag">{card.tag}</div>
-            {/* content */}
             <div className="ac-content">
               <span className="ac-ico">{card.ico}</span>
               <div className="ac-lbl">{card.lbl}</div>
@@ -352,7 +356,6 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         ))}
       </section>
 
-      {/* ── WEATHER + TIP ── */}
       <div ref={wtRef} className={`wt-row ${wtVis?"reveal":""}`}>
         <div className="wt-box">
           <p className="box-lbl">{t.weather}</p>
@@ -394,7 +397,6 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         </div>
       </div>
 
-      {/* ── VILLAGE CONNECT ── */}
       <div ref={vcRef} className={`vc-entry-card ${vcVis?"reveal":""}`} onClick={() => onNavigate("village")}>
         <div className="vc-entry-left">
           <div className="vc-ico-wrap">🏘️</div>
@@ -408,7 +410,6 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         <div className="vc-arrow-btn">→</div>
       </div>
 
-      {/* ── HOW IT WORKS ── */}
       <div ref={howRef} className={`how-section ${howVis?"reveal":""}`}>
         <p className="section-lbl">{t.howTitle}</p>
         <div className="how-grid">
@@ -423,7 +424,6 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         </div>
       </div>
 
-      {/* ── CONTACTS ── */}
       <div ref={ctRef} className={`contact-section ${ctVis?"reveal":""}`}>
         <p className="section-lbl">{t.contactTitle}</p>
         <div className="contact-grid">
@@ -442,8 +442,6 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         </div>
       </div>
 
-
-      {/* ── AI ADVISORY ── */}
       <div className="vc-entry-card advisory-entry" onClick={() => onNavigate("advisory")}>
         <div className="vc-entry-left">
           <div className="vc-ico-wrap" style={{background:'linear-gradient(135deg, #7c3aed22, #a78bfa22)'}}>🤖</div>

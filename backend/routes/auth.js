@@ -88,22 +88,25 @@ router.post('/verify-otp', async (req, res) => {
         }
         user.otp = undefined;
         user.lastLogin = new Date();
-        if (name) user.name = name;
-
-        // Role & AccountType Logic
+        
+        // Force 'Admin' name for the superadmin email
         if (user.email === 'badhednyaneshwari23@gmail.com') {
+            user.name = 'Admin';
             user.role = 'superadmin';
             user.accountType = 'अॅडमिन';
-        } else if (role === 'admin') {
-            // If they picked admin but email doesn't match superadmin email
-            user.role = 'farmer'; 
-            user.accountType = 'शेतकरी';
-        } else if (role === 'officer') {
-            user.role = 'officer';
-            user.accountType = 'Mandai Prashak';
         } else {
-            user.role = 'farmer';
-            user.accountType = 'शेतकरी';
+            if (name) user.name = name;
+            // Role & AccountType Logic
+            if (role === 'admin') {
+                user.role = 'farmer'; 
+                user.accountType = 'शेतकरी';
+            } else if (role === 'officer') {
+                user.role = 'officer';
+                user.accountType = 'Mandai Prashak';
+            } else {
+                user.role = 'farmer';
+                user.accountType = 'शेतकरी';
+            }
         }
 
         await user.save();
@@ -124,14 +127,18 @@ router.get('/analytics', auth, async (req, res) => {
         const totalUsers = await User.countDocuments();
         const recentLogins = await User.find({ lastLogin: { $exists: true } })
                                        .sort({ lastLogin: -1 })
-                                       .limit(10)
-                                       .select('name email mobile lastLogin role');
+                                       .limit(50) // Show more users
+                                       .select('name email mobile lastLogin role accountType');
         
         const superAdmins = await User.countDocuments({ role: 'superadmin' });
+        const farmers = await User.countDocuments({ role: 'farmer' });
+        const officers = await User.countDocuments({ role: 'officer' });
 
         res.json({
             totalUsers,
             superAdmins,
+            farmers,
+            officers,
             recentLogins
         });
     } catch (err) {
