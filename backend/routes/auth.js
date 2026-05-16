@@ -186,25 +186,26 @@ router.get('/analytics', auth, async (req, res) => {
             if (changed) await u.save();
         }
 
-        // 100% BULLETPROOF FETCH: Get ALL users first
         const allUsersRaw = await User.find({}).lean();
         
-        console.log(`Analytics Raw Fetch: Found ${allUsersRaw.length} total users`);
-        if (allUsersRaw.length > 0) {
-            console.log(`Sample Role: [${allUsersRaw[0].role}]`);
-        }
+        console.log(`Analytics: Found ${allUsersRaw.length} total users in DB`);
 
-        const farmerList = allUsersRaw.filter(u => {
-            const r = (u.role || '').trim().toLowerCase();
-            return r === 'farmer' || r === '' || !u.role;
-        });
-        const adminList = allUsersRaw.filter(u => {
-            const r = (u.role || '').trim().toLowerCase();
-            return r === 'superadmin' || r === 'admin';
-        });
-        const officerList = allUsersRaw.filter(u => {
-            const r = (u.role || '').trim().toLowerCase();
-            return r === 'officer' || r === 'staff';
+        // 100% Guaranteed Categorization
+        const adminList = [];
+        const officerList = [];
+        const farmerList = [];
+
+        allUsersRaw.forEach(u => {
+            const role = (u.role || '').trim().toLowerCase();
+            const email = (u.email || '').toLowerCase();
+            
+            if (role === 'superadmin' || role === 'admin' || email === 'badhednyaneshwari23@gmail.com' || email === 'badhednyaneshwari2323@gmail.com') {
+                adminList.push(u);
+            } else if (role === 'officer' || role === 'staff' || u.mandiId || u.staffId) {
+                officerList.push(u);
+            } else {
+                farmerList.push(u);
+            }
         });
 
         // Get the last 50 login events
