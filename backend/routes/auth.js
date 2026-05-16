@@ -186,26 +186,23 @@ router.get('/analytics', auth, async (req, res) => {
             if (changed) await u.save();
         }
 
-        const totalUsers = await User.countDocuments({});
-        const superAdminsCount = await User.countDocuments({ role: { $regex: /^superadmin$/i } });
-        const farmersCount = await User.countDocuments({ role: { $regex: /^farmer$/i } });
-        const officersCount = await User.countDocuments({ role: { $regex: /^officer$/i } });
-
-        console.log(`Analytics: Total=${totalUsers}, Admin=${superAdminsCount}, Farmers=${farmersCount}`);
-
-        // Get actual user lists for the columns - Using .lean() for raw data
-        const adminList = await User.find({ role: { $regex: /^superadmin$/i } }).select('name email mobile lastLogin').lean();
-        const farmerList = await User.find({ role: { $regex: /^farmer$/i } }).select('name email mobile lastLogin').lean();
-        const officerList = await User.find({ role: { $regex: /^officer$/i } }).select('name email mobile lastLogin').lean();
+        // 100% BULLETPROOF FETCH: Get ALL users first
+        const allUsersRaw = await User.find({}).lean();
         
+        console.log(`Analytics Raw Fetch: Found ${allUsersRaw.length} total users`);
+
+        const farmerList = allUsersRaw.filter(u => !u.role || u.role.toLowerCase() === 'farmer');
+        const adminList = allUsersRaw.filter(u => u.role && u.role.toLowerCase() === 'superadmin');
+        const officerList = allUsersRaw.filter(u => u.role && u.role.toLowerCase() === 'officer');
+
         // Get the last 50 login events
         const recentActivity = await LoginLog.find({}).sort({ timestamp: -1 }).limit(50).lean();
 
         res.json({
-            totalUsers,
-            superAdmins: superAdminsCount,
-            farmers: farmersCount,
-            officers: officersCount,
+            totalUsers: allUsersRaw.length,
+            superAdmins: adminList.length,
+            farmers: farmerList.length,
+            officers: officerList.length,
             adminList,
             farmerList,
             officerList,
