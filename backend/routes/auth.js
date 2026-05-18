@@ -77,7 +77,7 @@ router.post('/send-otp', async (req, res) => {
         } else {
             console.log(`📱 Mobile OTP for ${mobile} is: ${otp} (Check this terminal)`);
         }
-        res.json({ msg: 'OTP processed', checkTerminal: true });
+        res.json({ msg: 'OTP processed', checkTerminal: true, debugOtp: otp });
     } catch (err) {
         console.error("❌ Global OTP Error:", err);
         res.status(500).json({ msg: 'Server error', error: err.message });
