@@ -15,11 +15,14 @@ const OfficerModel = authConn.model('Officer', OfficerSchema);
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
+const emailUser = process.env.EMAIL_USER || 'dnyaneshwaribadhe2323@gmail.com';
+const emailPass = process.env.EMAIL_PASS || 'hruwnwlcgqquvfht';
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: emailUser,
+        pass: emailPass
     }
 });
 
@@ -61,7 +64,7 @@ router.post('/send-otp', async (req, res) => {
             console.log(`📧 Attempting to send email to ${email}...`);
             try {
                 await transporter.sendMail({
-                    from: `"AgroMaster" <${process.env.EMAIL_USER}>`,
+                    from: `"AgroMaster" <${emailUser}>`,
                     to: email,
                     subject: 'AgroMaster लॉगिन ओटीपी',
                     html: `<div style="font-family:sans-serif;padding:20px;border:2px solid #10b981;border-radius:12px;background:#f0fff4;">
