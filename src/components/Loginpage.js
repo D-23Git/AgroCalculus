@@ -96,12 +96,7 @@ const LoginPage = ({ onLogin }) => {
       setError(res.error === "Server unreachable" ? (lang === 'mr' ? 'सर्वरशी संपर्क होत नाही' : 'Server unreachable') : res.msg || res.error);
     } else {
       setOtpSent(true);
-      if (res.debugOtp) {
-        setForm(f => ({ ...f, otp: res.debugOtp }));
-        alert((lang === 'mr' ? '🔒 चाचणी ओटीपी (ऑटो-फिल): ' : '🔒 Test OTP (Auto-filled): ') + res.debugOtp);
-      } else {
-        alert(t.otpSentMsg + (authMethod === 'email' ? ' (Check Inbox/Spam)' : ' (Check Terminal)'));
-      }
+      alert(t.otpSentMsg + (authMethod === 'email' ? ' (Check Inbox/Spam)' : ' (Check Terminal)'));
     }
   };
 
