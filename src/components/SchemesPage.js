@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./SchemesPage.css";
 import api from '../utils/apiService';
+import AdBanner from "./AdBanner";
 
 const SCHEMES = [
   {
@@ -1112,6 +1113,7 @@ const SchemesPage = ({ onNavigate, lang = "mr", setLang }) => {
              <p>© 2026 <span>AgroCalculus</span>. {lang === 'mr' ? "सर्व हक्क राखीव." : "All rights reserved."}</p>
           </div>
         </footer>
+        <AdBanner position="schemes-bottom" />
       </div>
 
       {showStatusCheck && (

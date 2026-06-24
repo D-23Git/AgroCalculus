@@ -1,0 +1,463 @@
+/* ==========================================================================
+   AGRO CALCULUS — Mobile-Responsive & UX Polish Override File
+   Addresses mobile breakpoints, responsive styling, and premium card layouts.
+   ========================================================================== */
+
+/* --- Universal Utility Fixes --- */
+.apmc-mini-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--mh-border, #f1f5f9);
+  margin-top: auto;
+}
+.ams-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.ams-item b {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--mh-text, #0f172a);
+}
+.ams-item small {
+  font-size: 0.65rem;
+  color: var(--mh-text-light, #94a3b8);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Base Price & Rate Polish */
+.mcp-price-main span {
+  font-size: 1.6rem;
+  font-weight: 850;
+  color: #059669; /* Emerald 600 */
+  transition: color 0.3s ease;
+}
+.mcp-price-main small {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Trend Badges */
+.mcp-badge.bullish {
+  background: #ecfdf5 !important;
+  color: #059669 !important;
+}
+.mcp-badge.bearish {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+.mcp-badge.stable {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+}
+
+/* Price Fluctuation Badges */
+.mcp-fluctuation {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  vertical-align: middle;
+}
+.mcp-fluctuation.up {
+  background: #ecfdf5;
+  color: #059669;
+}
+.mcp-fluctuation.down {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Dark Mode Overrides for Crop Cards and Text elements */
+body.dark-mode .mh-crop-p-card {
+  background: var(--mh-card) !important;
+  border-color: var(--mh-border) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+body.dark-mode .mh-crop-p-card:hover {
+  border-color: var(--mh-green-bright) !important;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.2) !important;
+}
+body.dark-mode .mcp-crop-title h4 {
+  color: var(--mh-text) !important;
+}
+body.dark-mode .ams-item b {
+  color: var(--mh-text) !important;
+}
+body.dark-mode .mcp-price-main span {
+  color: #34d399 !important; /* Premium light emerald green in dark mode */
+}
+body.dark-mode .mcp-price-main small {
+  color: var(--mh-text-light) !important;
+}
+body.dark-mode .mcp-badge.bullish {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+body.dark-mode .mcp-badge.bearish {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+body.dark-mode .mcp-badge.stable {
+  background: rgba(148, 163, 184, 0.2) !important;
+  color: #cbd5e1 !important;
+}
+body.dark-mode .mcp-fluctuation.up {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+body.dark-mode .mcp-fluctuation.down {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+/* ==========================================================================
+   BREAKPOINT: Tablets & Smaller Devices (max-width: 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Global Adjustments */
+  body, html {
+    overflow-x: hidden !important;
+  }
+  
+  /* Touch target sizes & buttons */
+  button, 
+  a, 
+  input[type="button"], 
+  input[type="submit"] {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+  
+  /* --- 1. Login Page --- */
+  .lp-card {
+    width: 95% !important;
+    max-width: 440px !important;
+    padding: 30px 20px !important;
+  }
+  .lp-tabs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .lp-tabs button {
+    flex: 1 1 30%;
+    font-size: 0.75rem !important;
+    min-height: 38px;
+    padding: 6px !important;
+  }
+  
+  /* --- 2. Landing Page --- */
+  .tb {
+    padding: 0 12px !important;
+    height: auto !important;
+    min-height: 60px;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .tb-right {
+    gap: 6px !important;
+  }
+  .tb-admin-pill {
+    font-size: 0.75rem !important;
+    padding: 6px 10px !important;
+  }
+  .hero-h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem) !important;
+    line-height: 1.1 !important;
+  }
+  .hero-stats {
+    flex-direction: column !important;
+    align-items: center;
+    gap: 15px !important;
+  }
+  .wt-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+  }
+  .cards {
+    flex-direction: column !important;
+    gap: 15px !important;
+    align-items: stretch !important;
+    padding: 15px 15px 0 !important;
+  }
+  .acard {
+    min-height: 180px !important;
+  }
+  .how-grid, .contact-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  /* --- 3. Market Page --- */
+  .mh-nav {
+    padding: 10px 3% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    top: 0 !important; /* Stick to topmost */
+  }
+  .mh-nav-left {
+    justify-content: center;
+  }
+  .mh-nav-right {
+    width: 100% !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mh-actions {
+    border-left: none !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px !important;
+  }
+  .mh-actions button {
+    flex: 1;
+    min-height: 40px;
+    padding: 6px 8px !important;
+    font-size: 0.75rem !important;
+  }
+  .mh-hero {
+    padding: 60px 4% 80px !important;
+    min-height: auto !important;
+  }
+  .mh-hero-content h1 {
+    font-size: 2rem !important;
+  }
+  .mh-search-hub {
+    margin: 15px 4% !important;
+    width: auto !important;
+  }
+  .mh-search-top input {
+    font-size: 0.9rem !important;
+  }
+  .mh-search-bottom {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .mh-search-bottom select {
+    width: 100% !important;
+  }
+  
+  /* Market Rates Grid - Make it a clean 2-column grid */
+  .mh-rates-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+  }
+  .mh-crop-p-card {
+    padding: 12px !important;
+    border-radius: 16px !important;
+    gap: 8px !important;
+  }
+  .mcp-crop-emoji {
+    font-size: 2.8rem !important;
+  }
+  .mcp-crop-title h4 {
+    font-size: 1rem !important;
+  }
+  .mcp-price-main span {
+    font-size: 1.3rem !important;
+  }
+  
+  /* Modal responsive wrapper */
+  .mkt-detail-modal, 
+  .receipt-overlay, 
+  .dgp-overlay {
+    padding: 10px !important;
+  }
+  .receipt-card, 
+  .digital-gate-pass {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 16px !important;
+  }
+  .receipt-body, 
+  .dgp-body {
+    padding: 15px !important;
+  }
+  .receipt-grid, 
+  .dgp-grid {
+    gap: 10px !important;
+  }
+  
+  /* --- 4. Schemes Page --- */
+  .sch-gov-banner {
+    flex-direction: column !important;
+    text-align: center;
+    gap: 12px !important;
+    padding: 15px !important;
+  }
+  .sgb-left {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .sgb-text {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+  .sch-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+  }
+  .sch-modal-content {
+    width: 95% !important;
+    max-height: 90vh !important;
+    border-radius: 16px !important;
+  }
+  
+  /* --- 5. Village Connect --- */
+  .vc-sidebar {
+    width: 100% !important;
+    position: static !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    padding: 10px !important;
+    gap: 12px !important;
+    height: auto !important;
+  }
+  .vc-sb-link {
+    flex-direction: row !important;
+    padding: 8px 12px !important;
+    border-radius: 20px !important;
+  }
+  .vc-sb-link span:not(.icon) {
+    display: inline !important;
+    font-size: 0.8rem !important;
+  }
+  .vc-main-wrap {
+    margin-left: 0 !important;
+    padding: 15px !important;
+  }
+  .vc-stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  
+  /* --- 6. Digital Ledger --- */
+  .dl-canvas {
+    height: auto !important;
+    min-height: 100vh;
+    overflow-y: auto !important;
+  }
+  .dl-topbar {
+    height: auto !important;
+    padding: 12px !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .dl-main-grid {
+    grid-template-columns: 1fr !important;
+    padding: 15px !important;
+    gap: 15px !important;
+  }
+  /* Scrollable ledger tables */
+  .dl-table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .dl-table {
+    min-width: 600px !important;
+  }
+  
+  /* --- 7. Advisory Page --- */
+  .adv-form-grid, .bfc-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .result-row-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .water-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .adv-content {
+    padding: 15px !important;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT: Mobile Phones (max-width: 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* Grids to Single Column */
+  .how-grid, .contact-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .tb-name {
+    font-size: 0.9rem !important;
+  }
+  .tb-emblem {
+    font-size: 1rem !important;
+  }
+  
+  /* Hide action buttons text on small screens, keep icons */
+  .mh-actions button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem !important;
+    padding: 8px !important;
+  }
+  .mh-actions button span {
+    display: none; /* Hide button text */
+  }
+  .mh-actions button::after {
+    content: ''; /* Prevent overflow */
+  }
+  
+  /* Compact crop cards further for standard phones */
+  .mh-rates-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 6px !important;
+  }
+  .mh-crop-p-card {
+    padding: 10px 8px !important;
+  }
+  .mcp-crop-emoji {
+    font-size: 2.4rem !important;
+  }
+  .mcp-price-main span {
+    font-size: 1.15rem !important;
+  }
+  .ams-item b {
+    font-size: 0.75rem !important;
+  }
+  .ams-item small {
+    font-size: 0.55rem !important;
+  }
+  
+  /* Modals full width */
+  .sch-modal-content, 
+  .mkt-detail-modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .vc-stats-row {
+    grid-template-columns: 1fr !important;
+  }
+}

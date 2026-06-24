@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const uri = process.env.MONGO_URI || 'mongodb://badhednyaneshwari23_db_user:dnyaneshwari%402323@ac-lwmxqki-shard-00-00.htajcnr.mongodb.net:27017,ac-lwmxqki-shard-00-01.htajcnr.mongodb.net:27017,ac-lwmxqki-shard-00-02.htajcnr.mongodb.net:27017/agro_master?ssl=true&replicaSet=atlas-10ocxx-shard-0&authSource=admin&appName=Cluster0';
 const localUri = 'mongodb://127.0.0.1:27017/agro_app_local';

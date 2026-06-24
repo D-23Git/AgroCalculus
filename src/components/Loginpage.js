@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import "./Loginpage.css";
 import api from "../utils/apiService";
 import { DISTRICTS, ALL_DISTRICTS } from './MarketData';
+import AdBanner from "./AdBanner";
 
 const selectStyle = {
   width: '100%', padding: '12px', borderRadius: '10px',
@@ -407,6 +408,7 @@ const LoginPage = ({ onLogin }) => {
           {error && <div className="lp-error" style={{ marginTop: '20px' }}>⚠️ {error}</div>}
         </div>
       </div>
+      <AdBanner position="login-bottom" />
     </div>
   );
 };

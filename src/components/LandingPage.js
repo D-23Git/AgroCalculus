@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./LandingPage.css";
+import AdBanner from "./AdBanner";
 
 const API_KEY = "174f9f802dcca5936d82f0d168fea664";
 
@@ -457,6 +458,7 @@ const LandingPage = ({ profile, onNavigate, onLogout, lang, setLang }) => {
         <div className="vc-arrow-btn" style={{background:'rgba(167,139,250,0.12)',color:'#a78bfa'}}>→</div>
       </div>
 
+      <AdBanner position="dashboard-bottom" />
       <footer className="footer">
         <div className="footer-brand">🌾 महाराष्ट्र कृषी पोर्टल</div>
         <p>© 2026 · {lang==="en"?"Made with ❤️ for Indian Farmers":"भारतीय शेतकऱ्यांसाठी ❤️ सह बनवले"}</p>

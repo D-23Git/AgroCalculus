@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './MarketPage.css';
 import { DISTRICTS, CROPS, ALL_DISTRICTS } from './MarketData';
+import AdBanner from "./AdBanner";
 import AgroService from '../services/AgroService';
 import api from '../utils/apiService';
 import { FavoritesHubView, CompareHubView } from './HubViews';
@@ -429,8 +430,7 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
             </div>
          </nav>
 
-
-
+         <AdBanner position="mandi-header" />
          <main className="mh-main">
             {mainView === 'home' && !selMkt && (
                <div className="mh-home animate-in">
@@ -730,18 +730,19 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
                                      const arrival = pData?.arrival || (Math.floor((modalPrice % 100) * 2) + 40);
                                      const isFallback = pData?.isFallback;
                                      const lastUpdate = pData?.lastUpdate || 'Live';
-                                     const trend = pData?.status || 'stable';
+                                     const dynamicTrend = pData?.status || (fluctuation > 0 ? 'bullish' : fluctuation < 0 ? 'bearish' : 'stable');
 
                                      return (
                                         <div key={cid} className={`mh-crop-p-card ${isFallback ? 'fallback' : ''}`} onClick={() => setSelCropId(cid)}>
                                            <div className="mcp-header">
-                                              <div className={`mcp-badge live ${trend}`}><span className="mcp-live-dot pulsate" />{trend === 'bullish' ? '▲ ' : ''}{L === 'mr' ? 'थेट' : 'LIVE'}</div>
-                                              <div className="mcp-update-ts">{lastUpdate}</div>
-                                              {isFallback && <div className="mcp-fallback-tag">{L === 'mr' ? 'जवळपासचा कल' : 'Nearby Trend'}</div>}
-                                             <div className={`mcp-badge live ${trend}`}><span className="mcp-live-dot pulsate" />{trend === 'bullish' ? '▲ ' : ''}{L === 'mr' ? 'थेट' : 'LIVE'}</div>
-                                             <div className="mcp-update-ts">{lastUpdate}</div>
-                                             {isFallback && <div className="mcp-fallback-tag">{L === 'mr' ? 'जवळपासचा कल' : 'Nearby Trend'}</div>}
-                                             {isStaffLoggedIn && (
+                                               <div className={`mcp-badge live ${dynamicTrend}`}>
+                                                  <span className="mcp-live-dot pulsate" />
+                                                  {dynamicTrend === 'bullish' ? '▲ ' : dynamicTrend === 'bearish' ? '▼ ' : ''}
+                                                  {L === 'mr' ? 'थेट' : 'LIVE'}
+                                               </div>
+                                               <div className="mcp-update-ts">{lastUpdate}</div>
+                                               {isFallback && <div className="mcp-fallback-tag">{L === 'mr' ? 'जवळपासचा कल' : 'Nearby Trend'}</div>}
+                                              {isStaffLoggedIn && (
                                                 <button className="mcp-edit-btn" onClick={(e) => {
                                                    e.stopPropagation();
                                                    const val = prompt(`${c[L]} नवीन भाव:`, modalPrice);
@@ -760,7 +761,15 @@ export default function MarketPage({ lang: propL = 'mr', onNavigate, profile }) 
                                           </div>
                                           <div className="mcp-img"><span className="mcp-crop-emoji">{c.icon}</span></div>
                                           <div className="mcp-crop-title"><h4>{c[L]}</h4></div>
-                                          <div className="mcp-price-main"><span>₹{modalPrice.toLocaleString()}</span><small>/Q</small></div>
+                                          <div className="mcp-price-main">
+                                              <span>₹{modalPrice.toLocaleString()}</span>
+                                              <small>/Q</small>
+                                              {fluctuation !== 0 && (
+                                                 <span className={`mcp-fluctuation ${fluctuation > 0 ? 'up' : 'down'}`}>
+                                                    {fluctuation > 0 ? '▲' : '▼'} ₹{Math.abs(fluctuation)}
+                                                 </span>
+                                              )}
+                                           </div>
                                           <div className="apmc-mini-stats">
                                              <div className="ams-item"><b>₹{maxPrice.toLocaleString()}</b><small>MAX</small></div>
                                              <div className="ams-item"><b>{arrival} Q</b><small>ARR</small></div>

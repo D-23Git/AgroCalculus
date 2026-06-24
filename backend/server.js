@@ -1,9 +1,12 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const dotenv = require('dotenv');
-const { authConn, ledgerConn, marketConn, villageConn } = require('./db');
 
-dotenv.config();
+// Load .env from backend folder explicitly (works on Vercel + local)
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+const { authConn, ledgerConn, marketConn, villageConn } = require('./db');
 
 const app = express();
 
@@ -29,16 +32,16 @@ app.use('/api/schemes', require('./routes/schemes'));
 app.use('/api/news', require('./routes/news'));
 app.use('/api/external', require('./routes/external'));
 
-// 404 CATCH-ALL FOR DEBUGGING
-app.use((req, res, next) => {
-    console.log(`❌ [404 ERROR] Route Not Found: ${req.method} ${req.url}`);
-    res.status(404).json({ error: 'Route Not Found', path: req.url, method: req.method });
-});
-
 const PORT = 5003;
 
 app.get('/', (req, res) => {
     res.send('Agro-Master Professional API is running with Isolated Databases...');
+});
+
+// 404 CATCH-ALL FOR DEBUGGING (must be AFTER all routes)
+app.use((req, res, next) => {
+    console.log(`❌ [404 ERROR] Route Not Found: ${req.method} ${req.url}`);
+    res.status(404).json({ error: 'Route Not Found', path: req.url, method: req.method });
 });
 
 if (process.env.NODE_ENV !== 'production') {

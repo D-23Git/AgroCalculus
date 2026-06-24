@@ -7,6 +7,7 @@ import AdvisoryPage  from "./components/AdvisoryPage";
 import MarketPage    from "./components/MarketPage";
 import SchemesPage   from "./components/SchemesPage";
 import AdminDashboard from "./components/AdminDashboard";
+import "./mobile-responsive.css";
 
 const App = () => {
   const [page,    setPage]    = useState("login");
